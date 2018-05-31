@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -109,7 +110,7 @@ public class CoverageDiff {
 	    
 		// Merge the execution files and analyze the coverage
 		s.mergeExecDataFiles();
-		bundleCoverage = s.loadAndAnalyze(new File("./target/jacoco.exec"));		
+		bundleCoverage = s.loadAndAnalyze(new File("./target/jacoco.exec"));
 		bcl.add(bundleCoverage);
 		
 		s.calculateBranchCoverage(bcl);
@@ -352,11 +353,12 @@ public class CoverageDiff {
 	private void mergeExecDataFiles() throws IOException {
 		
 		System.out.println("merge exec files");
-		Process p = Runtime.getRuntime().exec("mvn jacoco:merge");
+		Process p = Runtime.getRuntime().exec("mvn.cmd jacoco:merge");
 	    
 		try {
-			p.waitFor();
-		} catch (InterruptedException e) {
+			p.waitFor(60, TimeUnit.SECONDS);
+		}
+		catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
